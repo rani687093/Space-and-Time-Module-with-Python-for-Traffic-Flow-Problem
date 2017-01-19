@@ -1,0 +1,38 @@
+import numpy
+L = 11.0
+nx = 51
+dx = L/(nx-1)
+dt = 0.001
+nt = 101
+V_max = 80.0
+rho10_max = 250.0
+rho10_nol = 10.0
+
+x = numpy.linspace(0,L,nx)
+rho10 = numpy.ones(nx)*10.0
+rho10[10:20] = 50.0
+print(0)
+print(rho10)
+
+for n in range(1,nt):  
+    rho10_n = rho10.copy() 
+    V_sum = V_max*(1-rho10[0]/rho10_max)
+    rho10_sum = 0
+    for i in range(1,nx): 
+        rho10_dummy = rho10[i]
+        rho10[i] = rho10_n[i] + dt/dx*V_max*(2*rho10_dummy/rho10_max - 1)*(rho10_n[i]-rho10_n[i-1])  
+        rho10_sum = rho10_sum + rho10[i]
+        rho10_ave = rho10_sum/(nx)
+        
+    V_min_km_per_hr = V_max *(1 - max(rho10)/rho10_max)  # minimum velocity in kilometers per hour
+    V_min_m_per_s = V_min_km_per_hr * 1000/3600          # minimum velocity in meters per second
+    
+    V_ave_km_per_hr = V_max *(1 - rho10_ave/rho10_max)   # average velocity in kilometers per hour
+    V_ave_m_per_s = V_ave_km_per_hr * 1000/3600          # average velocity in meters per second
+    
+    print(n)    
+    print(max(rho10))
+    print(rho10_ave)
+    print(V_min_m_per_s)
+    print(V_ave_m_per_s)
+    print(rho10)
